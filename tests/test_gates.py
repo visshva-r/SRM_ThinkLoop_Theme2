@@ -53,7 +53,10 @@ def test_troubleshoot_returns_contexts(client, kit_first):
 
 
 def test_no_siis_empty_contexts(client):
-    r = client.post("/v1/troubleshoot", json={"query": "screen broken"})
+    r = client.post(
+        "/v1/troubleshoot",
+        json={"query": "zzxy_unique_no_siis_probe_999"},
+    )
     assert r.status_code == 200
     body = r.json()
     assert body["contexts"] == []

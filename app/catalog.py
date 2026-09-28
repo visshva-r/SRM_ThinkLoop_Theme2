@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from app.config import DATA_DIR, DUMMY_CATALOG_ID, DUMMY_DEEPLINK
+from app.config import DATA_DIR, DUMMY_DEEPLINK
 
 
 class DeeplinkCatalog:

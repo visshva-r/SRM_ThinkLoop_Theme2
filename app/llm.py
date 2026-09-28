@@ -5,7 +5,7 @@ import json
 import os
 from typing import Any, Dict, List, Optional, Tuple
 
-from app.config import GEMINI_API_KEY, GEMINI_MODEL, LLM_TIMEOUT_SECONDS
+from app.config import GEMINI_API_KEY, GEMINI_MODEL
 
 _client = None
 

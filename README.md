@@ -1,11 +1,24 @@
+---
+title: Smart Guided Troubleshooting Engine
+emoji: 🔧
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+---
+
 # Smart Guided Troubleshooting Engine
 
-Theme 2 submission for Samsung PRISM Gen AI Hackathon 3.0.
+Theme 2 submission for Samsung PRISM Gen AI Hackathon 3.0 — **SRM Think Loop**.
+
+**Live API:** https://huggingface.co/spaces/visshva-r/SRM-ThinkLoop-Theme2 (after deploy)
 
 ## Endpoints
 
 - `GET /health` → `{"status": "ok"}`
 - `POST /v1/troubleshoot` → structured troubleshooting plan with masked Galaxy Settings deeplinks
+
+Open `/docs` on the Space URL for the interactive Swagger UI.
 
 ### Request
 
@@ -26,26 +39,11 @@ Returns hedged shape: top-level `contexts`, nested `response.contexts`, `query_v
 ## Quick start (local)
 
 ```bash
-cd Project
 python -m venv .venv
-.venv\Scripts\activate   # Windows
+.venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env     # add GEMINI_API_KEY (optional for fallback mode)
+copy .env.example .env
 uvicorn app.main:app --host 0.0.0.0 --port 7860
-```
-
-## Build offline results (no API key)
-
-```bash
-python scripts/build_results.py
-python scripts/eval_local.py --offline
-```
-
-## Build with Gemini
-
-```bash
-python scripts/build_results.py --use-llm
-python scripts/eval_local.py --url http://127.0.0.1:7860
 ```
 
 ## Docker
@@ -55,42 +53,22 @@ docker build -t smart-troubleshoot .
 docker run -p 7860:7860 -e GEMINI_API_KEY=your_key smart-troubleshoot
 ```
 
-## Hugging Face Spaces
+## Hugging Face Space secrets
 
-1. Create a new **Docker** Space (public).
-2. Push this repo or upload files.
-3. Set Space secret `GEMINI_API_KEY`.
-4. Space URL becomes your live judge endpoint (no auth).
+Set in Space **Settings → Secrets**:
 
-If cache p95 from India exceeds 300ms on a US Space, deploy the same image to a Singapore-region host and list both URLs here.
+- `GEMINI_API_KEY` — required for Gemini responses (fallback works without it)
+- Optional: `GEMINI_MODEL=gemini-2.5-flash`
 
-## Tests
+## Tests & evaluation
 
 ```bash
 pytest tests/ -q
+python scripts/eval_local.py --url http://127.0.0.1:7860
 ```
 
-## Submission checklist
+## GitHub
 
-- [ ] `results.jsonl` — 20 kit queries, 8–10 variations each
-- [ ] `metrics.md` — gate and score report
-- [ ] Demo video (≤5 min) linked in README
-- [ ] PPT in `submission/`
-- [ ] AI disclosure in `submission/`
-- [ ] Git tag `PRISM_GENAI_HACKATHON_Y2026`
+https://github.com/visshva-r/SRM_ThinkLoop_Theme2
 
-## Architecture
-
-```
-Query → Cache? → Gemini plan → Grounding → Hybrid deeplink retrieval → Repair → JSON
-                     ↓ miss/timeout
-              Extractive fallback (SIIS Step parser)
-```
-
-Hybrid retrieval: BM25 + `all-MiniLM-L6-v2` embeddings, reciprocal rank fusion over 578 masked deeplinks.
-
-## Team
-
-SRM Think Loop — Theme 2 (Guided Troubleshooting)
-
-Repository: https://github.com/visshva-r/SRM_ThinkLoop_Theme2
+Release tag: `PRISM_GENAI_HACKATHON_Y2026`

@@ -12,8 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY data ./data
 COPY scripts ./scripts
+COPY results.jsonl ./results.jsonl
 
 ENV DATA_DIR=/app/data
+ENV RESULTS_PATH=/app/results.jsonl
 ENV PORT=7860
 ENV PYTHONUNBUFFERED=1
 

@@ -27,7 +27,8 @@ class TroubleshootPipeline:
     def initialize(self) -> None:
         self.catalog.load()
         self.retriever.initialize()
-        self.cache.initialize()
+        if not LIGHTWEIGHT_MODE:
+            self.cache.initialize()
         warmed = self.cache.warm_from_results()
         self.ready = True
         self._warmed_count = warmed

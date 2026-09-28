@@ -7,6 +7,7 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 
 from app.catalog import DeeplinkCatalog
+from app.config import LIGHTWEIGHT_MODE
 from app.embedder import SharedEmbedder
 
 
@@ -43,6 +44,9 @@ class HybridRetriever:
             self.corpus.append(self.catalog.search_text(entry))
         tokenized = [_tokenize(c) for c in self.corpus]
         self.bm25 = BM25Okapi(tokenized)
+        if LIGHTWEIGHT_MODE:
+            self._ready = True
+            return
         self.model.initialize()
         self.embeddings = self.model.encode(self.corpus)
         self._ready = True
@@ -53,17 +57,20 @@ class HybridRetriever:
 
     def search(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         self.ensure_ready()
-        assert self.bm25 is not None and self.model is not None and self.embeddings is not None
+        assert self.bm25 is not None
 
         q_tokens = _tokenize(query)
         bm25_scores = self.bm25.get_scores(q_tokens)
         bm25_rank = [self.ids[i] for i in np.argsort(bm25_scores)[::-1][: top_k * 3]]
 
-        q_emb = self.model.encode([query.lower()])[0]
-        sims = self.embeddings @ q_emb
-        dense_rank = [self.ids[i] for i in np.argsort(sims)[::-1][: top_k * 3]]
-
-        fused = rrf_fusion([bm25_rank, dense_rank])[:top_k]
+        if LIGHTWEIGHT_MODE or self.embeddings is None:
+            fused = [(cid, 1.0 / (idx + 1)) for idx, cid in enumerate(bm25_rank[:top_k])]
+        else:
+            assert self.model is not None
+            q_emb = self.model.encode([query.lower()])[0]
+            sims = self.embeddings @ q_emb
+            dense_rank = [self.ids[i] for i in np.argsort(sims)[::-1][: top_k * 3]]
+            fused = rrf_fusion([bm25_rank, dense_rank])[:top_k]
         results: List[Dict[str, Any]] = []
         for cid, score in fused:
             entry = self.catalog.get(cid)

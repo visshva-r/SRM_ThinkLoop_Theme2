@@ -20,6 +20,7 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 CACHE_SIMILARITY_THRESHOLD = float(os.getenv("CACHE_SIMILARITY_THRESHOLD", "0.80"))
 PORT = int(os.getenv("PORT", "7860"))
+LIGHTWEIGHT_MODE = os.getenv("LIGHTWEIGHT_MODE", "false").lower() in ("1", "true", "yes")
 
 LLM_TIMEOUT_SECONDS = 7.0
 DUMMY_DEEPLINK = "bixby://dummy_positive"

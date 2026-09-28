@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from app.config import CACHE_SIMILARITY_THRESHOLD, RESULTS_PATH
+from app.config import CACHE_SIMILARITY_THRESHOLD, LIGHTWEIGHT_MODE, RESULTS_PATH
 from app.embedder import SharedEmbedder
 
 
@@ -47,6 +47,13 @@ class SemanticCache:
         hit = self.exact.get(key)
         if hit:
             return {**hit, "cache_hit": True}
+
+        if LIGHTWEIGHT_MODE:
+            hit = self.exact.get(normalize_query(query))
+            if hit:
+                return {**hit, "cache_hit": True}
+            return None
+
         if not siis and not self.entries:
             return None
         self.ensure_ready()
@@ -73,10 +80,13 @@ class SemanticCache:
         payload: Dict[str, Any],
         variations: Optional[List[str]] = None,
     ) -> None:
-        self.ensure_ready()
-        assert self.model is not None
         key = self._exact_key(query, siis)
         self.exact[key] = payload
+        if LIGHTWEIGHT_MODE:
+            self.exact[normalize_query(query)] = payload
+            return
+        self.ensure_ready()
+        assert self.model is not None
         sh = siis_hash(siis)
         texts = [normalize_query(query)] + [normalize_query(v) for v in (variations or [])]
         embs = self.model.encode(texts)
@@ -109,6 +119,11 @@ class SemanticCache:
                     "contexts": response.get("contexts", []),
                     "response": response,
                 }
-                self.put(query, None, payload, variations)
+                if LIGHTWEIGHT_MODE:
+                    keys = {normalize_query(query)} | {normalize_query(v) for v in variations}
+                    for text in keys:
+                        self.exact[text] = payload
+                else:
+                    self.put(query, None, payload, variations)
                 count += 1
         return count

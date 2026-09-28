@@ -148,6 +148,8 @@ class TroubleshootPipeline:
                 variations = plan.get("query_variations") or generate_variations(query)
                 contexts = plan.get("contexts") or []
                 contexts = self._ground_contexts(contexts, siis_content)
+                if not any(c.get("actions") for c in contexts):
+                    plan = None
 
         if not contexts:
             meta["model"] = "fallback"

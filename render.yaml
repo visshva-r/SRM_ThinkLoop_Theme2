@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: srm-thinkloop-theme2
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_API_KEY
+        sync: false

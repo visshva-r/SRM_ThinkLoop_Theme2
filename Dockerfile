@@ -16,9 +16,9 @@ COPY results.jsonl ./results.jsonl
 
 ENV DATA_DIR=/app/data
 ENV RESULTS_PATH=/app/results.jsonl
-ENV PORT=7860
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 7860
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Render sets PORT at runtime. Hugging Face Spaces use 7860.
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860}

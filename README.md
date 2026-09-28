@@ -11,7 +11,7 @@ app_port: 7860
 
 Theme 2 submission for Samsung PRISM Gen AI Hackathon 3.0 — **SRM Think Loop**.
 
-**Live API:** https://huggingface.co/spaces/visshva-r/SRM-ThinkLoop-Theme2 (after deploy)
+**Live API:** deploy on Render (Hugging Face Docker Spaces now require a paid plan).
 
 ## Endpoints
 
@@ -53,12 +53,16 @@ docker build -t smart-troubleshoot .
 docker run -p 7860:7860 -e GEMINI_API_KEY=your_key smart-troubleshoot
 ```
 
-## Hugging Face Space secrets
+## Deploy on Render (free)
 
-Set in Space **Settings → Secrets**:
+Hugging Face Docker Spaces require a Pro subscription, so this API is hosted on Render.
 
-- `GEMINI_API_KEY` — required for Gemini responses (fallback works without it)
-- Optional: `GEMINI_MODEL=gemini-2.5-flash`
+1. Sign in at [render.com](https://render.com) with GitHub.
+2. New → Blueprint → connect `visshva-r/SRM_ThinkLoop_Theme2` (uses `render.yaml`).
+3. When asked, paste `GEMINI_API_KEY` from your local `.env`.
+4. After the build is live, test `https://<your-service>.onrender.com/health` and `/docs`.
+
+Free instances sleep after inactivity. Open the URL once before a demo so the first judged call is not a cold wake-up.
 
 ## Tests & evaluation
 

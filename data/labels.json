@@ -1,0 +1,14 @@
+"""Expected deeplink labels for kit scenarios (manual review targets)."""
+{
+  "_readme": "Optional expected catalog ids per row for deeplink precision measurement. NONE = manual/no deeplink expected.",
+  "labels": {
+    "row_1": {
+      "topic": "Email Connection",
+      "expected_ids": ["DL-WIFI", "DL-APPS", "NONE"]
+    },
+    "row_2": {
+      "topic": "Display",
+      "expected_ids": ["NONE", "NONE", "NONE", "NONE"]
+    }
+  }
+}

@@ -3,7 +3,7 @@
 ## Gates (must-pass)
 | Gate | Status |
 |------|--------|
-| G2 /health | FAIL |
+| G2 /health | PASS |
 | G3 coverage >= 95% | PASS (100.0%) |
 | G4 schema >= 90% | PASS (100.0%) |
 | G5 zero URL leaks | PASS (0 leaks) |
@@ -18,12 +18,18 @@
 | A5 Query variations | 5.0/5 |
 | **Total** | **43.0/60** |
 
-## Latency (server-side probe)
-| Path | P95 (ms) | Target |
-|------|----------|--------|
-| Cache hit (exact) | 0 | <= 300 |
-| Cache hit (paraphrase) | 0 | <= 300 |
-| Cold path | 0 | <= 8000 |
+## Live deployment probe
+- URL: https://srm-thinkloop-theme2.onrender.com
+- Probe query: My Samsung A115G tablet screen flashes and then goes completely blank whenever I...
+- Probe paraphrase: My A115G tablet screen flickers and turns off when I open Gmail....
+
+| Path | P95 (ms) | cache_hit ratio | Target |
+|------|----------|-----------------|--------|
+| Cache hit (exact) | 730 | 100% | <= 300 ms, >= 90% |
+| Cache hit (paraphrase) | 709 | 100% | <= 300 ms, >= 80% |
+| Cold path | 42707 | n/a | <= 8000 ms |
+
+Render free tier adds network latency; `meta.cache_hit` confirms cache behavior even when p95 exceeds 300 ms.
 
 ## Results file
 - Lines in results.jsonl: 20

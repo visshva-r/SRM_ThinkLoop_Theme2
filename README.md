@@ -11,14 +11,17 @@ app_port: 7860
 
 Theme 2 submission for Samsung PRISM Gen AI Hackathon 3.0 — **SRM Think Loop**.
 
-**Live API:** deploy on Render (Hugging Face Docker Spaces now require a paid plan).
+**Live API:** https://srm-thinkloop-theme2.onrender.com
+
+- Health: https://srm-thinkloop-theme2.onrender.com/health
+- Swagger UI: https://srm-thinkloop-theme2.onrender.com/docs
+
+(Hugging Face Docker Spaces require a paid plan; this API is hosted on Render free tier.)
 
 ## Endpoints
 
 - `GET /health` → `{"status": "ok"}`
 - `POST /v1/troubleshoot` → structured troubleshooting plan with masked Galaxy Settings deeplinks
-
-Open `/docs` on the Space URL for the interactive Swagger UI.
 
 ### Request
 
@@ -69,6 +72,7 @@ Free instances sleep after inactivity. Open the URL once before a demo so the fi
 ```bash
 pytest tests/ -q
 python scripts/eval_local.py --url http://127.0.0.1:7860
+python scripts/eval_local.py --url https://srm-thinkloop-theme2.onrender.com
 ```
 
 ## GitHub

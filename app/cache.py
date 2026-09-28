@@ -7,9 +7,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
-from app.config import CACHE_SIMILARITY_THRESHOLD, EMBEDDING_MODEL, RESULTS_PATH
+from app.config import CACHE_SIMILARITY_THRESHOLD, RESULTS_PATH
+from app.embedder import SharedEmbedder
 
 
 def normalize_query(q: str) -> str:
@@ -24,15 +24,15 @@ def siis_hash(siis: Optional[Dict[str, Any]]) -> str:
 
 
 class SemanticCache:
-    def __init__(self, threshold: float = CACHE_SIMILARITY_THRESHOLD) -> None:
+    def __init__(self, embedder: SharedEmbedder, threshold: float = CACHE_SIMILARITY_THRESHOLD) -> None:
         self.threshold = threshold
         self.exact: Dict[str, Dict[str, Any]] = {}
         self.entries: List[Dict[str, Any]] = []
-        self.model: Optional[SentenceTransformer] = None
+        self.model = embedder
         self._ready = False
 
     def initialize(self) -> None:
-        self.model = SentenceTransformer(EMBEDDING_MODEL, device="cpu")
+        self.model.initialize()
         self._ready = True
 
     def ensure_ready(self) -> None:
@@ -51,7 +51,7 @@ class SemanticCache:
             return None
         self.ensure_ready()
         assert self.model is not None
-        q_emb = self.model.encode([normalize_query(query)], normalize_embeddings=True)[0]
+        q_emb = self.model.encode([normalize_query(query)])[0]
         sh = siis_hash(siis)
         best_score = 0.0
         best_entry: Optional[Dict[str, Any]] = None
@@ -79,7 +79,7 @@ class SemanticCache:
         self.exact[key] = payload
         sh = siis_hash(siis)
         texts = [normalize_query(query)] + [normalize_query(v) for v in (variations or [])]
-        embs = self.model.encode(texts, normalize_embeddings=True)
+        embs = self.model.encode(texts)
         for text, emb in zip(texts, embs):
             self.entries.append(
                 {

@@ -17,6 +17,8 @@ COPY results.jsonl ./results.jsonl
 ENV DATA_DIR=/app/data
 ENV RESULTS_PATH=/app/results.jsonl
 ENV PYTHONUNBUFFERED=1
+ENV OMP_NUM_THREADS=1
+ENV MALLOC_ARENA_MAX=2
 
 EXPOSE 7860
 

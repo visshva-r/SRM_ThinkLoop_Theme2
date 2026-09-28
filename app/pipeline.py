@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from app.cache import SemanticCache, normalize_query
 from app.catalog import DeeplinkCatalog
+from app.embedder import SharedEmbedder
 from app.config import DUMMY_CATALOG_ID, LLM_TIMEOUT_SECONDS
 from app.fallback import extract_plan, generate_variations
 from app.grounding import filter_grounded_steps
@@ -18,8 +19,9 @@ from app.schema import ContextDeeplinkResponse
 class TroubleshootPipeline:
     def __init__(self) -> None:
         self.catalog = DeeplinkCatalog()
-        self.retriever = HybridRetriever(self.catalog)
-        self.cache = SemanticCache()
+        self.embedder = SharedEmbedder()
+        self.retriever = HybridRetriever(self.catalog, self.embedder)
+        self.cache = SemanticCache(self.embedder)
         self.ready = False
 
     def initialize(self) -> None:

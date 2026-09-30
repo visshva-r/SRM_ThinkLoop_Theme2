@@ -17,7 +17,11 @@ Theme 2 submission for Samsung PRISM Gen AI Hackathon 3.0 — **SRM Think Loop**
 - Swagger UI: https://srm-thinkloop-theme2.onrender.com/docs
 
 **Demo video (≤5 min):** [submission/Demo_Video.mp4](submission/Demo_Video.mp4)  
-Direct GitHub link: https://github.com/visshva-r/SRM_ThinkLoop_Theme2/blob/main/submission/Demo_Video.mp4
+https://github.com/visshva-r/SRM_ThinkLoop_Theme2/blob/main/submission/Demo_Video.mp4
+
+**Presentation:** [submission/SRM_ThinkLoop_Submission.pptx](submission/SRM_ThinkLoop_Submission.pptx)
+
+**AI Disclosure:** [submission/LangAI3.0_AI_Disclosure.docx](submission/LangAI3.0_AI_Disclosure.docx)
 
 (Hugging Face Docker Spaces require a paid plan; this API is hosted on Render free tier.)
 
